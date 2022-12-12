@@ -24,21 +24,21 @@ public class CategoryServiceImplementation implements CategoryService {
 
 	@Override
 	public CategoryDto createCategory(CategoryDto categoryDto) {
-		Category cat = this.modelMapper.map(categoryDto, Category.class);
-		Category addedCat = this.categoryRepository.save(cat);
-		return this.modelMapper.map(addedCat, CategoryDto.class);
+		Category category = this.modelMapper.map(categoryDto, Category.class);
+		Category addedCategory = this.categoryRepository.save(category);
+		return this.modelMapper.map(addedCategory, CategoryDto.class);
 	}
 
 	@Override
 	public CategoryDto updateCategory(CategoryDto categoryDto, Integer categoryId) {
 
-		Category cat = this.categoryRepository.findById(categoryId)
+		Category category = this.categoryRepository.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category ", "Category Id", categoryId));
 
-		cat.setCategoryTitle(categoryDto.getCategoryTitle());
-		cat.setCategoryDescription(categoryDto.getCategoryDescription());
+		category.setCategoryTitle(categoryDto.getCategoryTitle());
+		category.setCategoryDescription(categoryDto.getCategoryDescription());
 
-		Category updatedcat = this.categoryRepository.save(cat);
+		Category updatedcat = this.categoryRepository.save(category);
 
 		return this.modelMapper.map(updatedcat, CategoryDto.class);
 	}
@@ -46,27 +46,27 @@ public class CategoryServiceImplementation implements CategoryService {
 	@Override
 	public void deleteCategory(Integer categoryId) {
 
-		Category cat = this.categoryRepository.findById(categoryId)
+		Category category = this.categoryRepository.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category ", "category id", categoryId));
-		this.categoryRepository.delete(cat);
+		this.categoryRepository.delete(category);
 	}
 
 	@Override
 	public CategoryDto getCategoryById(Integer categoryId) {
-		Category cat = this.categoryRepository.findById(categoryId)
+		Category category = this.categoryRepository.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "category id", categoryId));
 
-		return this.modelMapper.map(cat, CategoryDto.class);
+		return this.modelMapper.map(category, CategoryDto.class);
 	}
 
 	@Override
 	public List<CategoryDto> getAllCategories() {
 
 		List<Category> categories = this.categoryRepository.findAll();
-		List<CategoryDto> catDtos = categories.stream().map((cat) -> this.modelMapper.map(cat, CategoryDto.class))
+		List<CategoryDto> categoryDtos = categories.stream().map((category) -> this.modelMapper.map(category, CategoryDto.class))
 				.collect(Collectors.toList());
 
-		return catDtos;
+		return categoryDtos;
 	}
 
 }

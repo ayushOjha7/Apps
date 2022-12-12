@@ -73,12 +73,6 @@ public class UserServiceImplementation implements UserService {
 
 	public User dtoToUser(UserDto userDto) {
 		User user = this.modelMapper.map(userDto, User.class);
-
-		// user.setId(userDto.getId());
-		// user.setName(userDto.getName());
-		// user.setEmail(userDto.getEmail());
-		// user.setAbout(userDto.getAbout());
-		// user.setPassword(userDto.getPassword());
 		return user;
 	}
 
