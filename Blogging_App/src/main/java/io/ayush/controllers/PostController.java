@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.ayush.payload.ApiResponse;
@@ -28,8 +29,8 @@ public class PostController {
 	private PostService postService;
 
 	@PostMapping("/user/{userId}/category/{categoryId}/post")
-	public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto, @PathVariable(name = "userId") Integer userId,
-			@PathVariable(name = "categoryId") Integer categoryId) {
+	public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto,
+			@PathVariable(name = "userId") Integer userId, @PathVariable(name = "categoryId") Integer categoryId) {
 
 		PostDto createdPost = this.postService.createPost(postDto, userId, categoryId);
 
@@ -68,6 +69,17 @@ public class PostController {
 
 		List<PostDto> posts = this.postService.getAllPostByCategory(categoryId);
 		return new ResponseEntity<List<PostDto>>(posts, HttpStatus.OK);
+	}
+
+	@GetMapping("/all")
+	public ResponseEntity<List<PostDto>> getAllPost(
+			@RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+			@RequestParam(value = "pageSize", defaultValue = "3", required = false) Integer pageSize) {
+		
+		List<PostDto> allPosts=this.postService.getAllPost(pageNumber, pageSize);
+		
+		return new ResponseEntity<List<PostDto>>(allPosts,HttpStatus.OK);
+
 	}
 
 //	@GetMapping("/posts/search/{keywords}")
