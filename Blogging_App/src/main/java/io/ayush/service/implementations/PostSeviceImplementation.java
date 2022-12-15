@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import io.ayush.entities.Category;
@@ -16,6 +17,7 @@ import io.ayush.entities.Post;
 import io.ayush.entities.User;
 import io.ayush.exceptions.ResourceNotFoundException;
 import io.ayush.payload.PostDto;
+import io.ayush.payload.PostResponse;
 import io.ayush.repositories.CategoryRepository;
 import io.ayush.repositories.PostRepository;
 import io.ayush.repositories.UserRepository;
@@ -115,9 +117,11 @@ public class PostSeviceImplementation implements PostService {
 	}
 
 	@Override
-	public List<PostDto> getAllPost(Integer pageNumber, Integer pageSize) {
+	public PostResponse getAllPost(Integer pageNumber, Integer pageSize,String sortBy,String sortDir) {
+		
+		Sort sort = (sortDir.equalsIgnoreCase("asc")) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
-		Pageable p = PageRequest.of(pageNumber, pageSize);
+		Pageable p = PageRequest.of(pageNumber, pageSize, sort);
 
 		Page<Post> pagePost = this.postRepository.findAll(p);
 
@@ -126,16 +130,23 @@ public class PostSeviceImplementation implements PostService {
 		List<PostDto> postDtos = allPost.stream().map((post) -> this.modelMapper.map(post, PostDto.class))
 				.collect(Collectors.toList());
 		
-		return postDtos;
+        PostResponse postResponse = new PostResponse();
+
+        postResponse.setContent(postDtos);
+        postResponse.setPageNumber(pagePost.getNumber());
+        postResponse.setPageSize(pagePost.getSize());
+        postResponse.setTotalElements(pagePost.getTotalElements());
+        postResponse.setTotalPages(pagePost.getTotalPages());
+        postResponse.setLastPage(pagePost.isLast());
+
+        return postResponse;
 	}
 
 	@Override
 	public List<PostDto> searchPost(String keyword) {
-//        List<Post> posts = this.postRepository.searchByTitle("%" + keyword + "%");
-//        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-//        return postDtos;
-
-		return null;
+        List<Post> posts = this.postRepository.searchByTitle("%" + keyword + "%");
+        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        return postDtos;
 	}
 
 }
