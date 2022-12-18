@@ -21,7 +21,7 @@ import io.ayush.payload.CategoryDto;
 import io.ayush.service.CategoryService;
 
 @RestController
-@RequestMapping("api/categories")
+@RequestMapping("/api/categories")
 public class CategoryController {
 
 	@Autowired
